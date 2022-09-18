@@ -1,20 +1,29 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using TodoList.Api.Common.Hosting.Extensions;
 
-namespace TodoList.Api
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+builder.Services
+    .AddConfigs(builder.Configuration)
+    .ConfigureSwaggerGeneration()
+    .ConfigureHsts()
+    .AddCors();
+
+const string corsPolicy = "corsOriginPolicy";
+builder.Services.AddControllers();
+builder.Services.ConfigureCors(corsPolicy);
+builder.Services.AddHealthChecks();
+builder.LoadTodoApiModuleStartups();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+    app.AddSwaggerUi();
+else
+    app.UseHsts();
+
+app.UseHttpsRedirection();
+app.MapHealthChecks("/health");
+app.UseCors(corsPolicy);
+app.MapControllers();
+
+await app.RunAsync();

@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using TodoList.Api.Module.Persistence;
 
-namespace TodoList.Api.Controllers
+namespace TodoList.Api.Module.Controllers
 {
+    [ApiExplorerSettings(GroupName = "API - ToDo")]
     [Route("api/[controller]")]
-    [ApiController]
-    public class TodoItemsController : ControllerBase
+    public class TodoItemsController : Controller
     {
         private readonly TodoContext _context;
         private readonly ILogger<TodoItemsController> _logger;

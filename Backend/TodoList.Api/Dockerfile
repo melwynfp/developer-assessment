@@ -1,0 +1,23 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM ghcr.io/invenco-cloud-systems-ics/ics-images/os-al2-dotnet:latest AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM ghcr.io/invenco-cloud-systems-ics/ics-images/os-al2-dotnet:latest AS build
+WORKDIR /src
+COPY ["TodoList.Api/TodoList.Api.csproj", "TodoList.Api/"]
+RUN dotnet restore "TodoList.Api/TodoList.Api.csproj"
+COPY . .
+WORKDIR "/src/TodoList.Api"
+RUN dotnet build "TodoList.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "TodoList.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "TodoList.Api.dll"]

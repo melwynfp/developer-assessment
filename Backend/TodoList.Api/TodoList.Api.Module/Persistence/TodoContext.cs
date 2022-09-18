@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace TodoList.Api
+namespace TodoList.Api.Module.Persistence
 {
     public class TodoContext : DbContext
     {
