@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace TodoList.Api.Module.Persistence
 {
     public class TodoContext : DbContext
@@ -9,6 +7,6 @@ namespace TodoList.Api.Module.Persistence
         {
         }
 
-        public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<TodoItem> TodoItems { get; set; } = null!;
     }
 }

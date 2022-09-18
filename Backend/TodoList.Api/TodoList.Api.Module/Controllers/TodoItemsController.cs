@@ -1,33 +1,41 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TodoList.Api.Module.Persistence;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using TodoList.Api.Module.Services;
 
 namespace TodoList.Api.Module.Controllers
 {
-    [ApiExplorerSettings(GroupName = "API - ToDo")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "API - Todo Items")]
     [Route("api/[controller]")]
-    public class TodoItemsController : Controller
+    public class TodoItemsController : ControllerBase
     {
         private readonly TodoContext _context;
         private readonly ILogger<TodoItemsController> _logger;
+        private readonly ITodoItemsService _todoItemsService;
 
-        public TodoItemsController(TodoContext context, ILogger<TodoItemsController> logger)
+        public TodoItemsController(TodoContext context, ILogger<TodoItemsController> logger, ITodoItemsService todoItemsService)
         {
-            _context = context;
-            _logger = logger;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _todoItemsService = todoItemsService ?? throw new ArgumentNullException(nameof(todoItemsService));
         }
 
         // GET: api/TodoItems
         [HttpGet]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(IEnumerable<TodoItem>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTodoItems()
         {
-            var results = await _context.TodoItems.Where(x => !x.IsCompleted).ToListAsync();
+            var results = await _todoItemsService.GetTodoItems();
             return Ok(results);
         }
 
         // GET: api/TodoItems/...
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(TodoItem), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTodoItem(Guid id)
         {
             var result = await _context.TodoItems.FindAsync(id);
@@ -41,7 +49,11 @@ namespace TodoList.Api.Module.Controllers
         }
 
         // PUT: api/TodoItems/... 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<IActionResult> PutTodoItem(Guid id, TodoItem todoItem)
         {
             if (id != todoItem.Id)
@@ -72,13 +84,11 @@ namespace TodoList.Api.Module.Controllers
 
         // POST: api/TodoItems 
         [HttpPost]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(TodoItem), StatusCodes.Status201Created)]
         public async Task<IActionResult> PostTodoItem(TodoItem todoItem)
         {
-            if (string.IsNullOrEmpty(todoItem?.Description))
-            {
-                return BadRequest("Description is required");
-            }
-            else if (TodoItemDescriptionExists(todoItem.Description))
+            if (TodoItemDescriptionExists(todoItem.Description))
             {
                 return BadRequest("Description already exists");
             } 
@@ -94,10 +104,10 @@ namespace TodoList.Api.Module.Controllers
             return _context.TodoItems.Any(x => x.Id == id);
         }
 
-        private bool TodoItemDescriptionExists(string description)
+        private bool TodoItemDescriptionExists(string? description)
         {
             return _context.TodoItems
-                   .Any(x => x.Description.ToLowerInvariant() == description.ToLowerInvariant() && !x.IsCompleted);
+                   .Any(x => string.Equals(x.Description, description, StringComparison.InvariantCultureIgnoreCase) && !x.IsCompleted);
         }
     }
 }

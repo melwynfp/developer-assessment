@@ -1,0 +1,10 @@
+# This repo is maintained by Clearpoint
+
+# /Backend/ @mniem is the code owner for the backend
+
+# *.csproj needs to be reviewed by the technical lead of the project
+# /Backend/TodoList.Api/TodoList.Api.Common.Hosting/ needs to be reviewed by the technical lead of the project
+# /Backend/TodoList.Api/TodoList.Api/ needs to be reviewed by the technical lead of the project
+
+# /Backend/TodoList.Api/TodoList.Api.Module/ needs to be reviewed by the subject matter expert of the module
+

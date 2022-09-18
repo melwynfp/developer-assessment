@@ -1,4 +1,4 @@
-using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TodoList.Api
 {
@@ -6,7 +6,8 @@ namespace TodoList.Api
     {
         public Guid Id { get; set; }
 
-        public string Description { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Description is required")]
+        public string? Description { get; set; }
 
         public bool IsCompleted { get; set; }
     }
