@@ -1,0 +1,34 @@
+name: Build and Test
+
+on:
+  push:
+    paths:
+      - 'Backend/TodoList.Api/**'
+    branches: [ main ]
+  pull_request:
+    paths:
+      - 'Backend/TodoList.Api/**'
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3   
+      
+    - name: Setup dotnet 6.0
+      uses: actions/setup-dotnet@v1
+      with:
+          dotnet-version: '6.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore Backend/TodoList.Api/TodoList.Api.sln
+    
+    - name: Build
+      run: dotnet build Backend/TodoList.Api/TodoList.Api.sln --no-restore 
+    
+    - name: Test
+      run: dotnet test Backend/TodoList.Api/TodoList.Api.sln --no-build --verbosity normal

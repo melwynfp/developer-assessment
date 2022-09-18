@@ -19,6 +19,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Api.Module", "Todo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoList.Api.Common", "TodoList.Api.Common\TodoList.Api.Common.csproj", "{891370A2-571F-471D-A9F4-4AB8FD993092}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3C87F7E2-F1F0-45CE-82F4-FC132A744F41}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\dependabot.yml = ..\..\.github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{0C4CA687-16BD-49B3-B665-7E13640C7265}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\workflows\dotnet-pr-ci.yml = ..\..\.github\workflows\dotnet-pr-ci.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,5 +61,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {061F7879-5D14-4C5E-A4A9-782C6FEB1132}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0C4CA687-16BD-49B3-B665-7E13640C7265} = {3C87F7E2-F1F0-45CE-82F4-FC132A744F41}
 	EndGlobalSection
 EndGlobal
